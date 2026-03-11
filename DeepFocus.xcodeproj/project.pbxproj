@@ -21,6 +21,7 @@
 		DD0000000000000000001B /* AppPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000032 /* AppPickerView.swift */; };
 		DD0000000000000000001C /* BlockerConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000033 /* BlockerConfigView.swift */; };
 		DD0000000000000000001D /* AppBlockerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000034 /* AppBlockerUITests.swift */; };
+		DDSPA000000000000000A3 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = DDSPA000000000000000A2 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDSPA000000000000000A3 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,6 +176,9 @@
 			dependencies = (
 			);
 			name = DeepFocus;
+			packageProductDependencies = (
+				DDSPA000000000000000A2 /* Sparkle */,
+			);
 			productName = DeepFocus;
 			productReference = DD00000000000000000001 /* DeepFocus.app */;
 			productType = "com.apple.product-type.application";
@@ -242,6 +247,9 @@
 			);
 			mainGroup = DD00000000000000000050;
 			productRefGroup = DD00000000000000000057 /* Products */;
+			packageReferences = (
+				DDSPA000000000000000A1 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -291,6 +299,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DDSPA000000000000000A1 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DDSPA000000000000000A2 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DDSPA000000000000000A1 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCBuildConfiguration section */
 		DD00000000000000000060 /* Debug */ = {

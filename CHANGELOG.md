@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.2] - 2026-03-11
+
+### Added
+
+- **Auto-updater**: Integrated Sparkle 2.9.0 for automatic in-app update checks.
+  DeepFocus will silently check for updates on launch and notify you when a new
+  version is available. A "Check for Updates…" item is also available in the
+  menu bar menu for manual checks. Updates are EdDSA-signed for security.
+
 ## [1.0.1] - 2026-03-11
 
 ### Fixed

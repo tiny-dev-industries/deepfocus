@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-# DeepFocus DMG Builder + GitHub Release Publisher
+# DeepFocus DMG Builder + GitHub Release Publisher + Sparkle Appcast Updater
 #
 # Usage:
-#   ./create_dmg.sh           — build DMG and publish a GitHub release
-#   ./create_dmg.sh --no-release — build + Drop Box copy only, skip GitHub
+#   ./create_dmg.sh           — build DMG, publish GitHub release, update appcast
+#   ./create_dmg.sh --no-release — build + Drop Box copy only, skip GitHub + appcast
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_FILE="$PROJECT_DIR/DeepFocus.xcodeproj"
@@ -14,6 +14,14 @@ BUILD_DIR="$PROJECT_DIR/build"
 DMG_OUTPUT="$PROJECT_DIR"
 CHANGELOG="$PROJECT_DIR/CHANGELOG.md"
 PUBLISH_RELEASE=true
+
+# Sparkle tools (bundled in repo under .sparkle-tools/)
+SPARKLE_TOOLS="$PROJECT_DIR/.sparkle-tools"
+SIGN_UPDATE="$SPARKLE_TOOLS/sign_update"
+
+# Appcast repo (cloned into a temp dir during release)
+APPCAST_REPO="git@github.com:tiny-dev-industries/updates.git"
+APPCAST_FILE="deepfocus/appcast.xml"
 
 for arg in "$@"; do
   case $arg in
@@ -133,6 +141,62 @@ if [ "$PUBLISH_RELEASE" = true ]; then
             --notes "$RELEASE_NOTES" \
             --repo tiny-dev-industries/deepfocus
         echo "✅ GitHub Release published: https://github.com/tiny-dev-industries/deepfocus/releases/tag/$TAG"
+    fi
+    echo ""
+
+    # ── Sparkle Appcast Update ─────────────────────────────────────────────────
+    echo "===================================================================="
+    echo "  Updating Sparkle Appcast"
+    echo "===================================================================="
+    echo ""
+
+    if [ ! -x "$SIGN_UPDATE" ]; then
+        echo "⚠️  sign_update not found at $SIGN_UPDATE — skipping appcast update"
+        echo "   Run: mkdir -p .sparkle-tools && cp /tmp/sparkle-spm/bin/sign_update .sparkle-tools/"
+    else
+        # Sign the DMG
+        DMG_SIZE=$(stat -f%z "$DMG_PATH")
+        DMG_DOWNLOAD_URL="https://github.com/tiny-dev-industries/deepfocus/releases/download/${TAG}/${DMG_NAME}"
+        SIGN_OUTPUT=$("$SIGN_UPDATE" "$DMG_PATH")
+        ED_SIGNATURE=$(echo "$SIGN_OUTPUT" | grep -oE 'sparkle:edSignature="[^"]+"' | head -1)
+
+        echo "🔏 Signed: $ED_SIGNATURE"
+
+        # Clone the appcast repo, prepend the new item, push
+        APPCAST_WORK=$(mktemp -d)
+        git clone --quiet "$APPCAST_REPO" "$APPCAST_WORK"
+
+        APPCAST_PATH="$APPCAST_WORK/$APPCAST_FILE"
+        PUB_DATE=$(date -u "+%a, %d %b %Y %H:%M:%S +0000")
+
+        NEW_ITEM="        <item>
+            <title>DeepFocus ${VERSION}</title>
+            <sparkle:releaseNotesLink>https://github.com/tiny-dev-industries/deepfocus/releases/tag/${TAG}</sparkle:releaseNotesLink>
+            <pubDate>${PUB_DATE}</pubDate>
+            <enclosure
+                url=\"${DMG_DOWNLOAD_URL}\"
+                sparkle:version=\"${VERSION}\"
+                sparkle:shortVersionString=\"${VERSION}\"
+                ${ED_SIGNATURE}
+                length=\"${DMG_SIZE}\"
+                type=\"application/octet-stream\"
+            />
+        </item>"
+
+        # Insert new item after the <channel> opening block (before first <item>)
+        awk -v new_item="$NEW_ITEM" '
+            /<item>/ && !inserted { print new_item; print ""; inserted=1 }
+            { print }
+        ' "$APPCAST_PATH" > "$APPCAST_PATH.tmp" && mv "$APPCAST_PATH.tmp" "$APPCAST_PATH"
+
+        cd "$APPCAST_WORK"
+        git add "$APPCAST_FILE"
+        git commit -m "Add DeepFocus ${VERSION} to appcast"
+        git push origin main
+        echo "📡 Appcast updated: https://raw.githubusercontent.com/tiny-dev-industries/updates/main/deepfocus/appcast.xml"
+
+        rm -rf "$APPCAST_WORK"
+        cd "$PROJECT_DIR"
     fi
     echo ""
 fi

@@ -48,6 +48,10 @@ struct DeepFocusApp: App {
 
             Divider()
 
+            Button("Check for Updates…") {
+                appDelegate.checkForUpdates()
+            }
+
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }
