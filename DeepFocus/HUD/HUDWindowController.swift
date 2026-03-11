@@ -40,7 +40,7 @@ final class HUDWindowController: NSObject, NSWindowDelegate {
 
         let panel = KeyableHUDPanel(
             contentRect: initialFrame(),
-            styleMask: [],
+            styleMask: [.resizable],
             backing: .buffered,
             defer: false
         )
@@ -113,12 +113,17 @@ final class HUDWindowController: NSObject, NSWindowDelegate {
     private func updateResizability(for state: TimerState) {
         guard let panel else { return }
 
+        // Never mutate styleMask on a visible window — it invalidates AppKit's
+        // constraint system mid-display-cycle and causes an EXC_BREAKPOINT crash
+        // on macOS 26+. Instead, lock/unlock the size via minSize/maxSize only.
         if state == .idle {
-            panel.styleMask = [.resizable]
             panel.minSize = NSSize(width: 260, height: 300)
             panel.maxSize = NSSize(width: 260, height: 1200)
         } else {
-            panel.styleMask = []
+            // Lock size: set min == max == current frame size
+            let locked = NSSize(width: panel.frame.width, height: panel.frame.height)
+            panel.minSize = locked
+            panel.maxSize = locked
         }
     }
 

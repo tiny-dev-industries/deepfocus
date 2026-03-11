@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.1] - 2026-03-11
+
+### Fixed
+
+- **Crash on macOS 26**: Mutating `NSPanel.styleMask` on a visible window while
+  SwiftUI's constraint engine was mid-pass caused an uncaught exception in
+  `_postWindowNeedsUpdateConstraints`, which AppKit escalated to `EXC_BREAKPOINT`
+  via `_crashOnException:`. Fixed by creating the panel with a fixed
+  `styleMask: [.resizable]` and controlling idle/active resize behavior solely
+  via `minSize`/`maxSize` (locked to the current frame size when a session is
+  active).
+
 ## [1.0.0] - 2026-03-11
 
 ### Added
