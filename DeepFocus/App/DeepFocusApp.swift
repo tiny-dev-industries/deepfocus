@@ -8,8 +8,13 @@ var globalHUDController: HUDWindowController?
 struct DeepFocusApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    private var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
+    }
+
     @StateObject private var timerModel = TimerModel()
     @StateObject private var blockerService = AppBlockerService()
+    @StateObject private var sparkleUpdater = SparkleUpdater()
 
     @State private var hudController: HUDWindowController? = nil
 
@@ -48,9 +53,15 @@ struct DeepFocusApp: App {
 
             Divider()
 
-            Button("Check for Updates…") {
-                appDelegate.checkForUpdates()
+            Text("DeepFocus v\(appVersion)")
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier("versionMenuItem")
+
+            Button(sparkleUpdater.buttonTitle) {
+                sparkleUpdater.checkForUpdates()
             }
+            .disabled(!sparkleUpdater.canCheckForUpdates)
+            .accessibilityIdentifier("checkForUpdatesButton")
 
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
@@ -75,6 +86,19 @@ struct DeepFocusApp: App {
             }
         }
         .menuBarExtraStyle(.menu)
+        .commands {
+            // Remove the Services submenu — not useful for a menu bar utility.
+            CommandGroup(replacing: .systemServices) {}
+
+            // "Check for Updates…" / "Install Update…" right below "About DeepFocus".
+            CommandGroup(after: .appInfo) {
+                Divider()
+                Button(sparkleUpdater.buttonTitle) {
+                    sparkleUpdater.checkForUpdates()
+                }
+                .disabled(!sparkleUpdater.canCheckForUpdates)
+            }
+        }
     }
 
     // MARK: - State Change Handling

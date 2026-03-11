@@ -26,9 +26,11 @@ struct HUDContentView: View {
 
     var body: some View {
         contentView
-            .padding(12)
+            .padding(.top, 28)   // clearance for traffic lights
+            .padding([.horizontal, .bottom], 12)
             .frame(minWidth: 210)
             .background(hudBackground)
+            .overlay(alignment: .topLeading) { trafficLights.padding(9) }
             .offset(x: shakeOffset)
             .overlay(alignment: .top) { toastBanner }
             .onHover { hovering in
@@ -522,9 +524,9 @@ struct HUDContentView: View {
         case .idle:
             height = timerModel.idleWindowHeight * scale
         case .running:
-            height = isHovered ? 136 * scale : 98 * scale
+            height = isHovered ? 152 * scale : 114 * scale
         case .paused, .completed:
-            height = isHovered ? 158 * scale : 122 * scale
+            height = isHovered ? 174 * scale : 138 * scale
         }
         if isEditingTaskName { height += 30 }
         NotificationCenter.default.post(
@@ -629,6 +631,79 @@ private struct MathChallenge {
             let b = Int.random(in: 20...99)
             return MathChallenge(question: "\(a) + \(b)", answer: a + b)
         }
+    }
+}
+
+// MARK: - Traffic lights
+
+extension HUDContentView {
+    /// macOS-style close / minimize / zoom buttons, always visible in the top-left corner.
+    ///
+    /// Behaviour:
+    /// - Idle: red (close) + yellow (minimize) both hide the HUD; green is disabled.
+    /// - Active timer: red is disabled (can't dismiss mid-session); yellow hides the HUD.
+    var trafficLights: some View {
+        let isTimerActive = timerModel.state == .running || timerModel.state == .paused
+        let redEnabled = !isTimerActive
+
+        return HStack(spacing: 8) {
+            // Red — hide HUD (disabled during active timer)
+            TrafficLightButton(
+                color: redEnabled
+                    ? Color(red: 1.0,   green: 0.373, blue: 0.341)
+                    : Color(white: 0.35),
+                icon: "xmark",
+                showIcon: isHovered && redEnabled,
+                disabled: !redEnabled
+            ) {
+                NotificationCenter.default.post(name: .hudShouldHide, object: nil)
+            }
+
+            // Yellow — miniaturize with genie animation (always available)
+            TrafficLightButton(
+                color: Color(red: 0.996, green: 0.737, blue: 0.180),
+                icon: "minus",
+                showIcon: isHovered
+            ) {
+                NotificationCenter.default.post(name: .hudShouldMiniaturize, object: nil)
+            }
+
+            // Green — no-op; greyed out (no meaningful zoom for a floating HUD)
+            TrafficLightButton(
+                color: Color(white: 0.35),
+                icon: "arrow.up.left.and.arrow.down.right",
+                showIcon: false,
+                disabled: true
+            ) {}
+        }
+    }
+}
+
+private struct TrafficLightButton: View {
+    let color: Color
+    let icon: String
+    let showIcon: Bool
+    var disabled: Bool = false
+    let action: () -> Void
+
+    @State private var isHovered = false
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                Circle()
+                    .fill(color)
+                    .frame(width: 12, height: 12)
+                if showIcon || isHovered, !disabled {
+                    Image(systemName: icon)
+                        .font(.system(size: 6.5, weight: .black))
+                        .foregroundStyle(.black.opacity(0.55))
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+        .onHover { isHovered = $0 }
     }
 }
 

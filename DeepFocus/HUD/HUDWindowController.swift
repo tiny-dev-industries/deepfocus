@@ -3,8 +3,10 @@ import SwiftUI
 import Combine
 
 extension Notification.Name {
-    static let hudResizeRequested  = Notification.Name("com.deepfocus.hudResizeRequested")
-    static let hudShouldBecomeKey  = Notification.Name("com.deepfocus.hudShouldBecomeKey")
+    static let hudResizeRequested    = Notification.Name("com.deepfocus.hudResizeRequested")
+    static let hudShouldBecomeKey    = Notification.Name("com.deepfocus.hudShouldBecomeKey")
+    static let hudShouldHide         = Notification.Name("com.deepfocus.hudShouldHide")
+    static let hudShouldMiniaturize  = Notification.Name("com.deepfocus.hudShouldMiniaturize")
 }
 
 private final class KeyableHUDPanel: NSPanel {
@@ -40,7 +42,7 @@ final class HUDWindowController: NSObject, NSWindowDelegate {
 
         let panel = KeyableHUDPanel(
             contentRect: initialFrame(),
-            styleMask: [.resizable],
+            styleMask: [.resizable, .miniaturizable],
             backing: .buffered,
             defer: false
         )
@@ -98,6 +100,26 @@ final class HUDWindowController: NSObject, NSWindowDelegate {
         ) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.panel?.makeKeyAndOrderFront(nil)
+            }
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: .hudShouldHide,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.hide()
+            }
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: .hudShouldMiniaturize,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.panel?.miniaturize(nil)
             }
         }
     }

@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.0.4] - 2026-03-11
+
+### Added
+
+- **Traffic light buttons on HUD**: macOS-style close/minimize/zoom buttons are
+  now always visible in the top-left corner of the HUD.
+  - Red (×): hides the HUD (disabled during an active timer).
+  - Yellow (−): miniaturizes the HUD to the Dock with the standard genie animation.
+  - Green: disabled (no meaningful zoom action for a floating HUD).
+- **Dock icon toggle**: Clicking the Dock icon now toggles the HUD — shows it
+  if hidden, hides it if visible. Restores from the Dock when miniaturized.
+- **"Check for Updates…" in app menu**: Added beside "About DeepFocus" with a
+  separator, in addition to the menu bar menu.
+- **Reactive update button**: Title changes to "Install Update…" when Sparkle
+  finds a new version; resets after dismissal or error.
+- **Version label in menu bar menu**: "DeepFocus v1.0.4" always visible in the
+  menu bar dropdown.
+
+### Removed
+
+- **Services submenu**: Removed unused macOS Services submenu.
+
+## [1.0.3] - 2026-03-11
+
+### Added
+
+- **Version label in menu**: Menu bar menu now shows "DeepFocus v1.0.3" as a
+  static label above "Check for Updates…" so you always know which version is running.
+- **"Check for Updates…" in app menu**: The item now appears in the DeepFocus
+  app menu (next to About DeepFocus) with a separator, in addition to the
+  menu bar menu.
+- **Reactive update title**: The update button title changes automatically —
+  "Check for Updates…" normally, "Install Update…" when a new version is
+  available, and back to "Check for Updates…" after dismissal or error.
+- **Button disabled while busy**: The update button is disabled while Sparkle
+  is actively checking or downloading, preventing duplicate requests.
+
+### Removed
+
+- **Services submenu**: Removed the unused macOS Services submenu from the app
+  menu to reduce clutter.
+
 ## [1.0.2] - 2026-03-11
 
 ### Added

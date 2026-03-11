@@ -1,26 +1,22 @@
 import AppKit
 import UserNotifications
-import Sparkle
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Set by DeepFocusApp on launch so the delegate can inspect timer state.
     var timerModel: TimerModel?
-
-    /// Sparkle updater controller — must be kept alive for the app's lifetime.
-    private let updaterController = SPUStandardUpdaterController(
-        startingUpdater: true,
-        updaterDelegate: nil,
-        userDriverDelegate: nil
-    )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
         NotificationService.requestPermission()
     }
 
-    /// Exposed so the menu bar "Check for Updates…" item can trigger a manual check.
-    func checkForUpdates() {
-        updaterController.checkForUpdates(nil)
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
+        if hasVisibleWindows {
+            NotificationCenter.default.post(name: .hudShouldHide, object: nil)
+        } else {
+            NotificationCenter.default.post(name: .hudShouldBecomeKey, object: nil)
+        }
+        return true
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {

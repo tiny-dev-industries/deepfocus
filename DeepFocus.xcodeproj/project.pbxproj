@@ -15,12 +15,14 @@
 		DD00000000000000000015 /* HUDWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000025 /* HUDWindowController.swift */; };
 		DD00000000000000000016 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000026 /* NotificationService.swift */; };
 		DD00000000000000000017 /* AppBlockerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000027 /* AppBlockerService.swift */; };
+		DD0000000000000000001F /* SparkleUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000036 /* SparkleUpdater.swift */; };
 		DD00000000000000000018 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000028 /* Styles.swift */; };
 		DD00000000000000000019 /* FocusableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000029 /* FocusableTextField.swift */; };
 		DD0000000000000000001A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000030 /* Assets.xcassets */; };
 		DD0000000000000000001B /* AppPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000032 /* AppPickerView.swift */; };
 		DD0000000000000000001C /* BlockerConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000033 /* BlockerConfigView.swift */; };
 		DD0000000000000000001D /* AppBlockerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000034 /* AppBlockerUITests.swift */; };
+		DD0000000000000000001E /* UpdatesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD00000000000000000035 /* UpdatesUITests.swift */; };
 		DDSPA000000000000000A3 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = DDSPA000000000000000A2 /* Sparkle */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +36,7 @@
 		DD00000000000000000025 /* HUDWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDWindowController.swift; sourceTree = "<group>"; };
 		DD00000000000000000026 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		DD00000000000000000027 /* AppBlockerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBlockerService.swift; sourceTree = "<group>"; };
+		DD00000000000000000036 /* SparkleUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdater.swift; sourceTree = "<group>"; };
 		DD00000000000000000028 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		DD00000000000000000029 /* FocusableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableTextField.swift; sourceTree = "<group>"; };
 		DD00000000000000000030 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -42,6 +45,7 @@
 		DD00000000000000000032 /* AppPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPickerView.swift; sourceTree = "<group>"; };
 		DD00000000000000000033 /* BlockerConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockerConfigView.swift; sourceTree = "<group>"; };
 		DD00000000000000000034 /* AppBlockerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBlockerUITests.swift; sourceTree = "<group>"; };
+		DD00000000000000000035 /* UpdatesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesUITests.swift; sourceTree = "<group>"; };
 		DD00000000000000000004 /* DeepFocusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DeepFocusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -131,6 +135,7 @@
 			children = (
 				DD00000000000000000026 /* NotificationService.swift */,
 				DD00000000000000000027 /* AppBlockerService.swift */,
+				DD00000000000000000036 /* SparkleUpdater.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				DD00000000000000000034 /* AppBlockerUITests.swift */,
+				DD00000000000000000035 /* UpdatesUITests.swift */,
 			);
 			path = DeepFocusUITests;
 			sourceTree = "<group>";
@@ -283,6 +289,7 @@
 				DD00000000000000000015 /* HUDWindowController.swift in Sources */,
 				DD00000000000000000016 /* NotificationService.swift in Sources */,
 				DD00000000000000000017 /* AppBlockerService.swift in Sources */,
+				DD0000000000000000001F /* SparkleUpdater.swift in Sources */,
 				DD00000000000000000018 /* Styles.swift in Sources */,
 				DD00000000000000000019 /* FocusableTextField.swift in Sources */,
 				DD0000000000000000001B /* AppPickerView.swift in Sources */,
@@ -295,6 +302,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD0000000000000000001D /* AppBlockerUITests.swift in Sources */,
+				DD0000000000000000001E /* UpdatesUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
