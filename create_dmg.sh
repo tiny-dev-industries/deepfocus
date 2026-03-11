@@ -183,11 +183,34 @@ if [ "$PUBLISH_RELEASE" = true ]; then
             />
         </item>"
 
-        # Insert new item after the <channel> opening block (before first <item>)
-        awk -v new_item="$NEW_ITEM" '
-            /<item>/ && !inserted { print new_item; print ""; inserted=1 }
-            { print }
-        ' "$APPCAST_PATH" > "$APPCAST_PATH.tmp" && mv "$APPCAST_PATH.tmp" "$APPCAST_PATH"
+        # Insert new item before the first existing <item> using Python
+        python3 - "$APPCAST_PATH" "$VERSION" "$DMG_DOWNLOAD_URL" "$ED_SIGNATURE" "$DMG_SIZE" "$PUB_DATE" <<'PYEOF'
+import sys, re
+
+path, version, url, ed_sig, size, pub_date = sys.argv[1:]
+
+new_item = f"""        <item>
+            <title>DeepFocus {version}</title>
+            <sparkle:releaseNotesLink>https://github.com/tiny-dev-industries/deepfocus/releases/tag/v{version}</sparkle:releaseNotesLink>
+            <pubDate>{pub_date}</pubDate>
+            <enclosure
+                url="{url}"
+                sparkle:version="{version}"
+                sparkle:shortVersionString="{version}"
+                {ed_sig}
+                length="{size}"
+                type="application/octet-stream"
+            />
+        </item>
+
+"""
+
+content = open(path).read()
+# Insert before the first <item>
+content = content.replace("<item>", new_item + "        <item>", 1)
+open(path, "w").write(content)
+print(f"  → Inserted {version} entry into appcast")
+PYEOF
 
         cd "$APPCAST_WORK"
         git add "$APPCAST_FILE"
