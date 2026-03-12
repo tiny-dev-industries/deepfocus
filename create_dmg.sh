@@ -29,9 +29,13 @@ for arg in "$@"; do
   esac
 done
 
-# ── Read version from CHANGELOG ───────────────────────────────────────────────
+# ── Read version from CHANGELOG + Info.plist ──────────────────────────────────
 VERSION=$(grep -m1 '## \[' "$CHANGELOG" | sed 's/## \[\(.*\)\].*/\1/')
 TAG="v${VERSION}"
+
+# CFBundleVersion is the build number Sparkle uses for comparisons.
+# It must be read from Info.plist — NOT derived from the human version string.
+BUILD_NUMBER=$(defaults read "$PROJECT_DIR/DeepFocus/Info.plist" CFBundleVersion 2>/dev/null || /usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PROJECT_DIR/DeepFocus/Info.plist")
 
 # Extract release notes for this version (between its heading and the next)
 RELEASE_NOTES=$(awk "/^## \[${VERSION}\]/{found=1; next} found && /^## \[/{exit} found{print}" "$CHANGELOG" | sed '/^[[:space:]]*$/d' | head -60)
@@ -184,10 +188,10 @@ if [ "$PUBLISH_RELEASE" = true ]; then
         </item>"
 
         # Insert new item before the first existing <item> using Python
-        python3 - "$APPCAST_PATH" "$VERSION" "$DMG_DOWNLOAD_URL" "$ED_SIGNATURE" "$DMG_SIZE" "$PUB_DATE" <<'PYEOF'
+        python3 - "$APPCAST_PATH" "$VERSION" "$BUILD_NUMBER" "$DMG_DOWNLOAD_URL" "$ED_SIGNATURE" "$DMG_SIZE" "$PUB_DATE" <<'PYEOF'
 import sys, re
 
-path, version, url, ed_sig, size, pub_date = sys.argv[1:]
+path, version, build_number, url, ed_sig, size, pub_date = sys.argv[1:]
 
 new_item = f"""        <item>
             <title>DeepFocus {version}</title>
@@ -195,7 +199,7 @@ new_item = f"""        <item>
             <pubDate>{pub_date}</pubDate>
             <enclosure
                 url="{url}"
-                sparkle:version="{version}"
+                sparkle:version="{build_number}"
                 sparkle:shortVersionString="{version}"
                 {ed_sig}
                 length="{size}"
